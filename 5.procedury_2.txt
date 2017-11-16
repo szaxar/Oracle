@@ -1,0 +1,110 @@
+---5.1
+ CREATE or REPLACE PROCEDURE wstaw_rezerwacje1 (id_wycieczki1 in INT ,
+   id_osoby1 IN INT)
+ AS
+osoba  INT;
+wycieczka  INT;
+ilosc  INT;
+limit1 INT;
+czas DATE;
+
+BEGIN
+  BEGIN
+ SELECT   count(osoby.id_osoby)  into  osoba FROM  osoby
+ where OSOBY.ID_OSOBY = id_osoby1;
+
+    SELECT  count(wycieczki.id_wycieczki) into wycieczka from WYCIECZKI
+    where WYCIECZKI.ID_WYCIECZKI = id_wycieczki1;
+
+    select count(*) into ilosc  from rezerwacje
+    where REZERWACJE.id_wycieczki = id_wycieczki1
+          and REZERWACJE.STATUS != 'A';
+
+    select count(*) into ilosc
+    from rezerwacje
+    where REZERWACJE.id_wycieczki = id_wycieczki1
+          and REZERWACJE.STATUS != 'A';
+  SELECT DATA into czas from WYCIECZKI
+    WHERE  id_wycieczki1=WYCIECZKI.ID_WYCIECZKI;
+
+    select LICZBA_MIEJSC  into limit1
+    from WYCIECZKI where id_wycieczki1=ID_WYCIECZKI;
+  END;
+
+    if(osoba = 0)
+  THEN
+    raise_application_error (-20001, 'Nie ma osoby o takim  id ' , TRUE);
+  END if;
+
+if(wycieczka = 0 )
+  THEN
+    raise_application_error (-20001, 'Nie ma wycieczki o takim id' , TRUE);
+    end if;
+
+
+ if(ilosc + 1 <= limit1)
+  THEN
+   raise_application_error (-20001, 'Nie ma miejsc' , TRUE);
+  END IF;
+
+  if(CURRENT_TIMESTAMP>czas) then
+     raise_application_error (-20001, 'Wycieczka juz sie odbyla' , TRUE);
+  END IF;
+
+  INSERT INTO rezerwacje(id_wycieczki, id_osoby, status)
+VALUES (id_wycieczki1,id_osoby1,'N');
+
+
+END wstaw_rezerwacje1;
+
+
+---5.2
+
+CREATE or REPLACE PROCEDURE zmien_status_rezerwacji (id_rezerwacji1 in INT ,
+   status1 IN CHAR)
+ AS
+   rezerwacja  INT;
+BEGIN
+  BEGIN
+SELECT  count(REZERWACJE.NR_REZERWACJI) into rezerwacja from REZERWACJE
+    where NR_REZERWACJI=id_rezerwacji1;
+  END;
+  if(rezerwacja = 0 )
+  THEN
+    raise_application_error (-20001, 'Nie ma wycieczki o takim id' , TRUE);
+    end if;
+
+  UPDATE REZERWACJE set STATUS=status1
+  where id_rezerwacji1=NR_REZERWACJI;
+END ;
+
+
+--5.3
+ CREATE or REPLACE PROCEDURE zmien_liczbe_miejsc (id_wycieczki in INT ,
+   liczba_miejsc IN INT)
+ AS
+   wycieczka  INT;
+   liczba INT;
+BEGIN
+  BEGIN
+SELECT  count(WYCIECZKI.ID_WYCIECZKI) into wycieczka from WYCIECZKI
+    where WYCIECZKI.ID_WYCIECZKI=id_wycieczki;
+
+SELECT count(*) into liczba from WYCIECZKI w
+INNER JOIN REZERWACJE r on r.ID_WYCIECZKI=w.ID_WYCIECZKI
+where w.ID_WYCIECZKI=id_wycieczki and r.STATUS!='A';
+
+  END;
+  if(wycieczka = 0 )
+  THEN
+    raise_application_error (-20001, 'Nie ma wycieczki o takim id' , TRUE);
+    end if;
+if(liczba>liczba_miejsc)
+  THEN
+  raise_application_error (-20001, 'Za duzo rejestracji' , TRUE);
+END IF;
+
+  UPDATE WYCIECZKI set LICZBA_MIEJSC=liczba_miejsc
+  where ID_WYCIECZKI=id_wycieczki;
+END ;
+

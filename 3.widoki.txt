@@ -1,0 +1,74 @@
+
+---3.1
+CREATE VIEW wycieczki_osoby
+  AS     SELECT
+  w.ID_WYCIECZKI,w.NAZWA,w.KRAJ,w.DATA,o.IMIE,o.NAZWISKO,r.STATUS
+         FROM WYCIECZKI w
+  JOIN REZERWACJE r ON w.ID_WYCIECZKI = r.ID_WYCIECZKI
+  JOIN OSOBY o ON r.ID_OSOBY = o.ID_OSOBY;
+  
+  
+  ---3.2
+  CREATE VIEW wycieczki_osoby_potwierdzone
+  AS     SELECT
+  w.ID_WYCIECZKI,w.NAZWA,w.KRAJ,w.DATA,o.IMIE,o.NAZWISKO,r.STATUS
+         FROM WYCIECZKI w
+  JOIN REZERWACJE r ON w.ID_WYCIECZKI = r.ID_WYCIECZKI
+  JOIN OSOBY o ON r.ID_OSOBY = o.ID_OSOBY
+where r.STATUS='P';
+
+--3.3
+
+CREATE VIEW wycieczki_przyszle
+  AS     SELECT
+  w.ID_WYCIECZKI,w.NAZWA,w.KRAJ,w.DATA,o.IMIE,o.NAZWISKO,r.STATUS
+         FROM WYCIECZKI w
+  JOIN REZERWACJE r ON w.ID_WYCIECZKI = r.ID_WYCIECZKI
+  JOIN OSOBY o ON r.ID_OSOBY = o.ID_OSOBY
+where w.DATA>CURRENT_TIMESTAMP;
+
+--3.4
+
+CREATE or REPLACE VIEW wycieczki_miejsca1 AS SELECT
+   w.ID_WYCIECZKI, w.NAZWA,w.KRAJ,w.DATA,
+   w.LICZBA_MIEJSC - (SELECT COUNT (*)
+                      from REZERWACJE r where r.ID_WYCIECZKI = w.ID_WYCIECZKI)
+         AS  "wolne miejsca"
+   from WYCIECZKI w
+
+
+--3.5
+
+CREATE or REPLACE VIEW wycieczki_miejsca_dostepnych AS SELECT
+   w.ID_WYCIECZKI, w.NAZWA,w.KRAJ,w.DATA,
+   w.LICZBA_MIEJSC - (SELECT COUNT (*)
+                      from REZERWACJE r where r.ID_WYCIECZKI = w.ID_WYCIECZKI)
+         AS  "wolne miejsca"
+   from WYCIECZKI w
+  WHERE
+ w.LICZBA_MIEJSC - (SELECT COUNT (*)
+                      from REZERWACJE r where r.ID_WYCIECZKI = w.ID_WYCIECZKI)>0
+
+
+
+
+  --3.6
+  
+  CREATE VIEW  rezerwacje_do_anulowania
+  AS   SELECT
+  w.ID_WYCIECZKI,o.IMIE,o.NAZWISKO,r.STATUS
+         FROM WYCIECZKI w
+  JOIN REZERWACJE r ON w.ID_WYCIECZKI = r.ID_WYCIECZKI
+  JOIN OSOBY o ON r.ID_OSOBY = o.ID_OSOBY
+WHERE r.STATUS!='A' and w.DATA<CURRENT_TIMESTAMP+7;
+
+
+
+--dodatkowe
+
+CREATE VIEW wycieczki_osoby_id
+  AS     SELECT
+  w.ID_WYCIECZKI,w.NAZWA,w.KRAJ,w.DATA,o.IMIE,o.NAZWISKO,r.STATUS,r.ID_OSOBY
+         FROM WYCIECZKI w
+  JOIN REZERWACJE r ON w.ID_WYCIECZKI = r.ID_WYCIECZKI
+  JOIN OSOBY o ON r.ID_OSOBY = o.ID_OSOBY;

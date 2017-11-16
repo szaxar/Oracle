@@ -1,0 +1,69 @@
+INSERT INTO osoby (imie, nazwisko, pesel, kontakt)
+VALUES('Adam', 'Kowalski', '32354321', 'tel: 6623');
+
+INSERT INTO osoby (imie, nazwisko, pesel, kontakt)
+VALUES('Jan', 'Nowak', '42145678', 'tel: 2312, dzwoniæ po 18.00');
+
+INSERT INTO osoby (imie, nazwisko, pesel, kontakt)
+VALUES('Adam', 'Nowak', '35654321', 'tel: 66232253');
+
+INSERT INTO osoby (imie, nazwisko, pesel, kontakt)
+VALUES('Patryk', 'Kurzeja', '52345678', 'tel: 4252122')
+
+
+INSERT INTO osoby (imie, nazwisko, pesel, kontakt)
+VALUES('Wiktor', 'Leczynski', '85454321', 'tel: 52434');
+
+INSERT INTO osoby (imie, nazwisko, pesel, kontakt)
+VALUES('Tomek', 'Wozniak', '15445678', 'tel: 8653344');
+
+INSERT INTO osoby (imie, nazwisko, pesel, kontakt)
+VALUES('Adam', 'Czapinski', '95454321', 'tel: 353225');
+
+INSERT INTO osoby (imie, nazwisko, pesel, kontakt)
+VALUES('Witold', 'Nowakowski', '42345678', 'tel:4242444');
+
+INSERT INTO osoby (imie, nazwisko, pesel, kontakt)
+VALUES('Karol', 'Peronczyk', '18654321', 'tel: 4221211');
+
+INSERT INTO osoby (imie, nazwisko, pesel, kontakt)
+VALUES('Agnieszka', 'Nowakowska', '86645678', 'tel: 43123378');
+
+
+INSERT INTO WYCIECZKI (nazwa, kraj, data, opis, liczba_miejsc)
+VALUES ('Piêkny Kraków','Polska',TO_DATE('2017-02-03','YYYY-MM-DD'),
+        'Najciekawa wycieczka ...',2);
+
+INSERT INTO WYCIECZKI (nazwa, kraj, data, opis, liczba_miejsc)
+VALUES ('Wieliczka','Polska',TO_DATE('2017-03-03','YYYY-MM-DD'),
+                                     'Zadziwiaj¹ca kopalnia ...',3);
+
+
+INSERT INTO WYCIECZKI (nazwa, kraj, data, opis, liczba_miejsc)
+VALUES (' Warszawa','Polska',TO_DATE('2019-02-03','YYYY-MM-DD'),
+        'Najciekawa stolica ...',5);
+
+INSERT INTO WYCIECZKI (nazwa, kraj, data, opis, liczba_miejsc)
+VALUES ('Niemcy','Niemcy',TO_DATE('2015-03-03','YYYY-MM-DD'),
+                                     'Zadziwiaj¹ca kobiety ...',3);
+
+INSERT INTO rezerwacje(id_wycieczki, id_osoby, status) VALUES (1,1,'N');
+
+INSERT INTO rezerwacje(id_wycieczki, id_osoby, status) VALUES (2,2,'P');
+
+INSERT INTO rezerwacje(id_wycieczki, id_osoby, status) VALUES (3,3,'Z');
+
+INSERT INTO rezerwacje(id_wycieczki, id_osoby, status) VALUES (4,4,'A');
+
+INSERT INTO rezerwacje(id_wycieczki, id_osoby, status) VALUES (1,5,'N');
+
+INSERT INTO rezerwacje(id_wycieczki, id_osoby, status) VALUES (2,6,'P');
+
+INSERT INTO rezerwacje(id_wycieczki, id_osoby, status) VALUES (3,7,'Z');
+
+INSERT INTO rezerwacje(id_wycieczki, id_osoby, status) VALUES (4,8,'A');
+
+INSERT INTO rezerwacje(id_wycieczki, id_osoby, status) VALUES (1,9,'N');
+
+INSERT INTO rezerwacje(id_wycieczki, id_osoby, status) VALUES (2,10,'P');
+

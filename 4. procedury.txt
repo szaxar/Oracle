@@ -1,0 +1,152 @@
+--4.1 
+
+CREATE TYPE uczsetnic_wycieszki_row AS OBJECT (
+  ID_WYCIECZKI INT,
+  NAZWA VARCHAR2(100),
+  KRAJ VARCHAR2(50),
+  DATA DATE,
+  IMIE VARCHAR2(50),
+  NAZWISKO VARCHAR2(50),
+  STATUS CHAR(1)
+)
+CREATE TYPE UCZESTNICY_WYC_TABLE AS TABLE OF UCZSETNIC_WYCIESZKI_ROW
+
+
+CREATE FUNCTION uczestnicy_wycieczki2 (id_wycieszki IN INT)
+  RETURN uczestnicy_wyc_table PIPELINED IS
+  curr SYS_REFCURSOR;
+  result_row uczsetnic_wycieszki_row
+             := uczsetnic_wycieszki_row(NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+BEGIN
+  OPEN curr FOR
+    SELECT * FROM WYCIECZKI_OSOBY WHERE ID_WYCIECZKI= id_wycieszki;
+  LOOP
+    FETCH curr INTO result_row.ID_WYCIECZKI, result_row.nazwa, result_row.KRAJ, result_row.DATA, result_row.IMIE,
+                    result_row.NAZWISKO, result_row.STATUS;
+    EXIT WHEN curr%NOTFOUND;
+    PIPE ROW(result_row);
+  END LOOP;
+  CLOSE curr;
+  RETURN;
+END;
+
+--4.2
+
+CREATE TYPE uczsetnic_rezerwacja_row AS OBJECT (
+  ID_WYCIECZKI INT,
+  NAZWA VARCHAR2(100),
+  KRAJ VARCHAR2(50),
+  DATA DATE,
+  IMIE VARCHAR2(50),
+  NAZWISKO VARCHAR2(50),
+  STATUS CHAR(1),
+  ID_OSOBY INT
+)
+/
+
+-- auto-generated definition
+CREATE TYPE UCZESTNICY_REZ_TABLE AS TABLE OF UCZSETNIC_REZERWACJA_ROW
+/
+
+  CREATE FUNCTION rezerwacje_osob (id_osoby1 IN INT)
+  RETURN uczestnicy_rez_table PIPELINED IS
+  curr SYS_REFCURSOR;
+  result_row UCZSETNIC_REZERWACJA_ROW
+             := UCZSETNIC_REZERWACJA_ROW(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+BEGIN
+  OPEN curr FOR
+    SELECT * FROM WYCIECZKI_OSOBY_ID WHERE ID_OSOBY= id_osoby1;
+  LOOP
+    FETCH curr INTO
+
+    result_row.ID_WYCIECZKI,
+    result_row.nazwa,
+    result_row.KRAJ,
+    result_row.DATA,
+    result_row.IMIE,
+    result_row.NAZWISKO,
+    result_row.STATUS,
+    result_row.ID_OSOBY;
+    EXIT WHEN curr%NOTFOUND;
+    PIPE ROW(result_row);
+  END LOOP;
+  CLOSE curr;
+  RETURN;
+END;
+/
+
+--4.3
+
+  CREATE FUNCTION przyszle_rezerwacje_osob (id_osoby1 IN INT)
+  RETURN uczestnicy_rez_table PIPELINED IS
+  curr SYS_REFCURSOR;
+  result_row UCZSETNIC_REZERWACJA_ROW
+             := UCZSETNIC_REZERWACJA_ROW(NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+BEGIN
+  OPEN curr FOR
+    SELECT * FROM WYCIECZKI_OSOBY_ID WHERE ID_OSOBY= id_osoby1
+  and DATA>CURRENT_TIMESTAMP ;
+  LOOP
+    FETCH curr INTO
+
+    result_row.ID_WYCIECZKI,
+    result_row.nazwa,
+    result_row.KRAJ,
+    result_row.DATA,
+    result_row.IMIE,
+    result_row.NAZWISKO,
+    result_row.STATUS,
+    result_row.ID_OSOBY;
+    EXIT WHEN curr%NOTFOUND;
+    PIPE ROW(result_row);
+  END LOOP;
+  CLOSE curr;
+  RETURN;
+END;
+--4.4
+
+CREATE or REPLACE TYPE wycieczki_row2 AS OBJECT (
+  ID_WYCIECZKI INT,
+  NAZWA VARCHAR2(100),
+  KRAJ VARCHAR2(50),
+  DATA DATE,
+  liczba_miejsc INT,
+  liczba_wolnych_miejsc int
+)
+/
+
+-- auto-generated definition
+CREATE or REPLACE  TYPE WYCIECZKI_TABLE AS TABLE OF wycieczki_row2
+/
+
+  CREATE or REPLACE FUNCTION dostepne_wycieczki2 (kraj in VARCHAR2,
+    data_od in DATE, data_do in DATE)
+  RETURN WYCIECZKI_TABLE PIPELINED IS
+  curr SYS_REFCURSOR;
+  result_row wycieczki_row2
+             := wycieczki_row2(NULL,NULL,NULL,NULL,NULL,NULL);
+BEGIN
+  OPEN curr FOR
+    SELECT * FROM WYCIECZKI_MIEJSCA_DOSTEPNYCH
+    WHERE kraj=WYCIECZKI_MIEJSCA_DOSTEPNYCH.KRAJ
+          and data_od<WYCIECZKI_MIEJSCA_DOSTEPNYCH.DATA
+          and data_do>WYCIECZKI_MIEJSCA_DOSTEPNYCH.DATA
+  ;
+  LOOP
+    FETCH curr INTO
+
+    result_row.ID_WYCIECZKI,
+    result_row.nazwa,
+    result_row.KRAJ,
+    result_row.DATA,
+    result_row.liczba_miejsc,
+    result_row.liczba_wolnych_miejsc;
+
+    EXIT WHEN curr%NOTFOUND;
+    PIPE ROW(result_row);
+  END LOOP;
+  CLOSE curr;
+  RETURN;
+END;
+
+
